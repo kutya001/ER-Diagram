@@ -4,7 +4,7 @@
     "description": "Расширенная схема EAV с отдельным справочником типов данных, учетом контрагентов, договоров, а также транзакций по закупкам и продажам.",
     "id": 5,
     "copied_from": null,
-    "exported_at": "2026-04-25T15:29:57.361Z"
+    "exported_at": "2026-04-25T16:24:36.459Z"
   },
   "tables": [
     {
@@ -15,8 +15,8 @@
           "is_fk": false,
           "name": "id",
           "description": "Идентификатор бренда",
-          "id": 231,
           "position": 1,
+          "id": 231,
           "type": "pk",
           "is_pk": true
         },
@@ -25,31 +25,30 @@
           "is_fk": false,
           "name": "name",
           "description": "Название бренда",
-          "id": 232,
           "position": 2,
+          "id": 232,
           "type": "str",
           "is_pk": false
         }
       ],
       "name": "brands",
       "description": "Бренды",
-      "id": 41,
       "position": {
         "x": 850.5707004005816,
         "y": -442.34238334079754
       },
+      "id": 41,
       "category": "Справочник"
     },
     {
-      "assignment": "Общее",
       "columns": [
         {
           "type_name": "PK",
           "is_fk": false,
           "name": "id",
           "description": "Идентификатор типа",
-          "id": 235,
           "position": 1,
+          "id": 235,
           "type": "pk",
           "is_pk": true
         },
@@ -78,8 +77,8 @@
           "is_fk": false,
           "name": "description",
           "description": "Описание",
-          "id": 355,
           "position": 1,
+          "id": 355,
           "type": "text",
           "is_pk": false
         },
@@ -98,8 +97,8 @@
           "is_fk": false,
           "name": "name",
           "description": "Название (Строка, Число)",
-          "position": 2,
           "id": 236,
+          "position": 2,
           "type": "str",
           "is_pk": false
         },
@@ -114,6 +113,7 @@
           "is_pk": false
         }
       ],
+      "assignment": "Общее",
       "name": "data_types",
       "description": "Справочник типов данных",
       "id": 43,
@@ -124,15 +124,14 @@
       "category": "Справочник"
     },
     {
-      "assignment": "Склад",
       "columns": [
         {
           "type_name": "PK",
           "is_fk": false,
           "name": "id",
           "description": "Идентификатор шаблона",
-          "id": 238,
           "position": 1,
+          "id": 238,
           "type": "pk",
           "is_pk": true
         },
@@ -141,8 +140,8 @@
           "is_fk": false,
           "name": "name",
           "description": "Название шаблона",
-          "position": 2,
           "id": 239,
+          "position": 2,
           "type": "str",
           "is_pk": false
         },
@@ -157,6 +156,7 @@
           "is_pk": false
         }
       ],
+      "assignment": "Склад",
       "name": "templates",
       "description": "Шаблоны номенклатуры (категории)",
       "position": {
@@ -174,8 +174,8 @@
           "is_fk": false,
           "name": "id",
           "description": "Идентификатор атрибута",
-          "position": 1,
           "id": 241,
+          "position": 1,
           "type": "pk",
           "is_pk": true
         },
@@ -185,9 +185,9 @@
           "is_fk": true,
           "name": "data_type_id",
           "description": "Ссылка на тип данных",
-          "fk_table": "data_types",
-          "position": 2,
           "id": 243,
+          "position": 2,
+          "fk_table": "data_types",
           "type": "fk",
           "is_pk": false
         },
@@ -218,8 +218,8 @@
           "is_fk": false,
           "name": "code",
           "description": "Системный код (напр. diagonal)",
-          "position": 5,
           "id": 245,
+          "position": 5,
           "type": "str",
           "is_pk": false
         },
@@ -236,11 +236,11 @@
       ],
       "name": "attributes",
       "description": "Схема атрибутов для шаблона",
-      "id": 45,
       "position": {
         "x": 477.1929059990973,
         "y": -793.5900031629119
       },
+      "id": 45,
       "category": "Детали"
     },
     {
@@ -251,8 +251,8 @@
           "is_fk": false,
           "name": "id",
           "description": "Идентификатор",
-          "position": 1,
           "id": 247,
+          "position": 1,
           "type": "pk",
           "is_pk": true
         },
@@ -271,8 +271,8 @@
           "is_fk": false,
           "name": "inn",
           "description": "ИНН/Tax ID",
-          "position": 3,
           "id": 249,
+          "position": 3,
           "type": "str",
           "is_pk": false
         },
@@ -289,22 +289,23 @@
       ],
       "name": "contractors",
       "description": "Контрагенты (поставщики, клиенты)",
-      "position": {
-        "x": 141.3884385074113,
-        "y": 64.18860696705502
-      },
       "id": 46,
+      "position": {
+        "x": 144.46512982077547,
+        "y": 98.03221141406111
+      },
       "category": "Справочник"
     },
     {
+      "assignment": "Склад",
       "columns": [
         {
           "type_name": "PK",
           "is_fk": false,
           "name": "id",
           "description": "Идентификатор товара",
-          "id": 251,
           "position": 1,
+          "id": 251,
           "type": "pk",
           "is_pk": true
         },
@@ -314,8 +315,8 @@
           "is_fk": true,
           "name": "template_id",
           "description": "Примененный шаблон",
-          "id": 252,
           "position": 2,
+          "id": 252,
           "fk_table": "templates",
           "type": "fk",
           "is_pk": false
@@ -335,8 +336,8 @@
           "is_fk": false,
           "name": "name",
           "description": "Наименование товара",
-          "id": 254,
           "position": 4,
+          "id": 254,
           "type": "str",
           "is_pk": false
         },
@@ -347,8 +348,8 @@
           "name": "brand_id",
           "description": "Бренд",
           "position": 5,
-          "fk_table": "brands",
           "id": 272,
+          "fk_table": "brands",
           "type": "fk",
           "is_pk": false
         },
@@ -358,24 +359,24 @@
           "is_fk": true,
           "name": "unit_of_measurement_id",
           "description": "Единица Измерения",
-          "position": 6,
           "fk_table": "units_of_measurement",
           "id": 277,
+          "position": 6,
           "type": "fk",
           "is_pk": false
         }
       ],
-      "assignment": "Склад",
       "name": "products",
       "description": "Номенклатура",
+      "id": 47,
       "position": {
         "x": 484.9527680384996,
         "y": -531.38110550613
       },
-      "id": 47,
       "category": "Справочник"
     },
     {
+      "assignment": "Склад",
       "columns": [
         {
           "type_name": "PK",
@@ -393,9 +394,9 @@
           "is_fk": true,
           "name": "attribute_id",
           "description": "Ссылка на атрибут (Attribute)",
-          "id": 257,
-          "position": 2,
           "fk_table": "attributes",
+          "position": 2,
+          "id": 257,
           "type": "fk",
           "is_pk": false
         },
@@ -416,13 +417,12 @@
           "is_fk": false,
           "name": "value",
           "description": "Значение",
-          "position": 4,
           "id": 258,
+          "position": 4,
           "type": "str",
           "is_pk": false
         }
       ],
-      "assignment": "Склад",
       "name": "product_values",
       "description": "Значения атрибутов (Value)",
       "position": {
@@ -439,8 +439,8 @@
           "is_fk": false,
           "name": "id",
           "description": "Идентификатор договора",
-          "id": 259,
           "position": 1,
+          "id": 259,
           "type": "pk",
           "is_pk": true
         },
@@ -450,9 +450,9 @@
           "is_fk": true,
           "name": "contract_type_id",
           "description": "",
+          "position": 1,
           "id": 424,
           "fk_table": "contract_types",
-          "position": 1,
           "type": "fk",
           "is_pk": false
         },
@@ -462,8 +462,8 @@
           "is_fk": true,
           "name": "contractor_id",
           "description": "Контрагент",
-          "id": 260,
           "position": 2,
+          "id": 260,
           "fk_table": "contractors",
           "type": "fk",
           "is_pk": false
@@ -474,8 +474,8 @@
           "is_fk": true,
           "name": "currency_id",
           "description": "Валюта",
-          "position": 3,
           "fk_table": "currencies",
+          "position": 3,
           "id": 341,
           "type": "fk",
           "is_pk": false
@@ -529,8 +529,8 @@
           "is_fk": true,
           "name": "departments_id",
           "description": "Отдел",
-          "id": 461,
           "fk_table": "departments",
+          "id": 461,
           "position": 1,
           "type": "fk",
           "is_pk": false
@@ -560,8 +560,8 @@
           "is_fk": false,
           "name": "date_time",
           "description": "Дата и время",
-          "id": 370,
           "position": 4,
+          "id": 370,
           "type": "datetime",
           "is_pk": false
         },
@@ -571,9 +571,9 @@
           "is_fk": true,
           "name": "src_warehouse_id",
           "description": "Склад-отправитель",
+          "id": 371,
           "position": 5,
           "fk_table": "warehouses",
-          "id": 371,
           "type": "fk",
           "is_pk": false
         },
@@ -584,8 +584,8 @@
           "name": "dest_warehouse_id",
           "description": "Склад-получатель",
           "fk_table": "warehouses",
-          "position": 6,
           "id": 372,
+          "position": 6,
           "type": "fk",
           "is_pk": false
         },
@@ -594,8 +594,8 @@
           "is_fk": false,
           "name": "total_amount",
           "description": "Итоговая сумма",
-          "id": 373,
           "position": 7,
+          "id": 373,
           "type": "float",
           "is_pk": false
         },
@@ -618,8 +618,8 @@
           "name": "contarctor_id",
           "description": "",
           "fk_table": "contractors",
-          "position": 9,
           "id": 340,
+          "position": 9,
           "type": "fk",
           "is_pk": false
         },
@@ -628,8 +628,8 @@
           "is_fk": false,
           "name": "doc_type",
           "description": "Тип (продажа/закупка)",
-          "id": 265,
           "position": 10,
+          "id": 265,
           "type": "str",
           "is_pk": false
         }
@@ -639,13 +639,12 @@
       "description": "Документы (Продажи, Закупки и Перемещения)",
       "id": 50,
       "position": {
-        "x": 404.0499003591106,
-        "y": -275.4990954808296
+        "x": 491.61214723329874,
+        "y": -199.42042196719078
       },
       "category": "Шапка"
     },
     {
-      "assignment": "Общее",
       "columns": [
         {
           "type_name": "PK",
@@ -662,8 +661,8 @@
           "is_fk": false,
           "name": "amount",
           "description": "Сумма",
-          "position": 1,
           "id": 374,
+          "position": 1,
           "type": "float",
           "is_pk": false
         },
@@ -674,8 +673,8 @@
           "name": "product_id",
           "description": "Товар",
           "fk_table": "products",
-          "position": 2,
           "id": 269,
+          "position": 2,
           "type": "fk",
           "is_pk": false
         },
@@ -685,9 +684,9 @@
           "is_fk": true,
           "name": "document_id",
           "description": "Связь с документом",
-          "position": 3,
           "fk_table": "wrh_documents",
           "id": 268,
+          "position": 3,
           "type": "fk",
           "is_pk": false
         },
@@ -696,8 +695,8 @@
           "is_fk": false,
           "name": "quantity",
           "description": "Количество",
-          "position": 4,
           "id": 270,
+          "position": 4,
           "type": "float",
           "is_pk": false
         },
@@ -706,12 +705,13 @@
           "is_fk": false,
           "name": "price",
           "description": "Цена",
-          "id": 271,
           "position": 5,
+          "id": 271,
           "type": "float",
           "is_pk": false
         }
       ],
+      "assignment": "Общее",
       "name": "wrh_document_lines",
       "description": "Строки документов",
       "position": {
@@ -722,6 +722,7 @@
       "category": "Детали"
     },
     {
+      "assignment": "Склад",
       "columns": [
         {
           "type_name": "PK",
@@ -738,8 +739,8 @@
           "is_fk": false,
           "name": "name",
           "description": "Наименование",
-          "id": 274,
           "position": 2,
+          "id": 274,
           "type": "str",
           "is_pk": false
         },
@@ -748,8 +749,8 @@
           "is_fk": false,
           "name": "description",
           "description": "Описание",
-          "position": 3,
           "id": 275,
+          "position": 3,
           "type": "text",
           "is_pk": false
         },
@@ -764,7 +765,6 @@
           "is_pk": false
         }
       ],
-      "assignment": "Склад",
       "name": "units_of_measurement",
       "description": "Единицы измерения",
       "position": {
@@ -793,8 +793,8 @@
           "name": "departments_id",
           "description": "Отдел",
           "id": 464,
-          "fk_table": "departments",
           "position": 1,
+          "fk_table": "departments",
           "type": "fk",
           "is_pk": false
         },
@@ -840,6 +840,7 @@
       "category": "Справочник"
     },
     {
+      "assignment": "Финансы",
       "columns": [
         {
           "type_name": "PK",
@@ -868,8 +869,8 @@
           "is_fk": false,
           "name": "name",
           "description": "Наименование",
-          "position": 2,
           "id": 332,
+          "position": 2,
           "type": "str",
           "is_pk": false
         },
@@ -894,18 +895,16 @@
           "is_pk": false
         }
       ],
-      "assignment": "Финансы",
       "name": "wallets",
       "description": "кошельки",
+      "id": 66,
       "position": {
         "x": -595.8755637561136,
         "y": 221.31081677675246
       },
-      "id": 66,
       "category": "Справочник"
     },
     {
-      "assignment": "Финансы",
       "columns": [
         {
           "type_name": "PK",
@@ -942,12 +941,13 @@
           "is_fk": false,
           "name": "is_active",
           "description": "Активен",
-          "position": 4,
           "id": 338,
+          "position": 4,
           "type": "bool",
           "is_pk": false
         }
       ],
+      "assignment": "Финансы",
       "name": "currencies",
       "description": "Валюты",
       "id": 67,
@@ -965,8 +965,8 @@
           "is_fk": false,
           "name": "id",
           "description": "Первичный ключ, автоинкремент",
-          "position": 1,
           "id": 342,
+          "position": 1,
           "type": "pk",
           "is_pk": true
         },
@@ -977,8 +977,8 @@
           "name": "departments_id",
           "description": "Отдел",
           "fk_table": "departments",
-          "position": 2,
           "id": 452,
+          "position": 2,
           "type": "fk",
           "is_pk": false
         },
@@ -988,8 +988,8 @@
           "is_fk": true,
           "name": "role",
           "description": "Роль в системе",
-          "position": 3,
           "fk_table": "roles",
+          "position": 3,
           "id": 348,
           "type": "fk",
           "is_pk": false
@@ -999,8 +999,8 @@
           "is_fk": false,
           "name": "name",
           "description": "Наименование",
-          "position": 4,
           "id": 343,
+          "position": 4,
           "type": "str",
           "is_pk": false
         },
@@ -1009,8 +1009,8 @@
           "is_fk": false,
           "name": "description",
           "description": "Описание",
-          "id": 344,
           "position": 5,
+          "id": 344,
           "type": "text",
           "is_pk": false
         },
@@ -1019,8 +1019,8 @@
           "is_fk": false,
           "name": "is_active",
           "description": "Активен",
-          "id": 345,
           "position": 6,
+          "id": 345,
           "type": "bool",
           "is_pk": false
         },
@@ -1029,8 +1029,8 @@
           "is_fk": false,
           "name": "email",
           "description": "Email пользователя",
-          "position": 7,
           "id": 346,
+          "position": 7,
           "type": "str",
           "is_pk": false
         },
@@ -1039,8 +1039,8 @@
           "is_fk": false,
           "name": "password_hash",
           "description": "Хеш пароля",
-          "id": 347,
           "position": 8,
+          "id": 347,
           "type": "str",
           "is_pk": false
         }
@@ -1055,15 +1055,14 @@
       "category": "Справочник"
     },
     {
-      "assignment": "Общее",
       "columns": [
         {
           "type_name": "PK",
           "is_fk": false,
           "name": "id",
           "description": "Первичный ключ, автоинкремент",
-          "position": 1,
           "id": 349,
+          "position": 1,
           "type": "pk",
           "is_pk": true
         },
@@ -1072,8 +1071,8 @@
           "is_fk": false,
           "name": "name",
           "description": "Наименование",
-          "id": 350,
           "position": 2,
+          "id": 350,
           "type": "str",
           "is_pk": false
         },
@@ -1082,8 +1081,8 @@
           "is_fk": false,
           "name": "description",
           "description": "Описание",
-          "position": 3,
           "id": 351,
+          "position": 3,
           "type": "text",
           "is_pk": false
         },
@@ -1098,6 +1097,7 @@
           "is_pk": false
         }
       ],
+      "assignment": "Общее",
       "name": "roles",
       "description": "Роли в системе",
       "position": {
@@ -1108,7 +1108,6 @@
       "category": "Справочник"
     },
     {
-      "assignment": "HR",
       "columns": [
         {
           "type_name": "PK",
@@ -1126,9 +1125,9 @@
           "is_fk": true,
           "name": "organizations_id",
           "description": "Организация",
+          "position": 1,
           "id": 451,
           "fk_table": "organizations",
-          "position": 1,
           "type": "fk",
           "is_pk": false
         },
@@ -1147,8 +1146,8 @@
           "is_fk": false,
           "name": "address",
           "description": "Фактический адрес",
-          "position": 3,
           "id": 359,
+          "position": 3,
           "type": "str",
           "is_pk": false
         },
@@ -1157,30 +1156,32 @@
           "is_fk": false,
           "name": "is_active",
           "description": "Активен",
-          "id": 360,
           "position": 4,
+          "id": 360,
           "type": "bool",
           "is_pk": false
         }
       ],
+      "assignment": "HR",
       "name": "departments",
       "description": "Точки продаж / Отделы",
+      "id": 70,
       "position": {
         "x": -272.9505442330038,
         "y": 206.07730814947166
       },
-      "id": 70,
       "category": "Справочник"
     },
     {
+      "assignment": "Финансы",
       "columns": [
         {
           "type_name": "PK",
           "is_fk": false,
           "name": "id",
           "description": "Первичный ключ, автоинкремент",
-          "position": 1,
           "id": 375,
+          "position": 1,
           "type": "pk",
           "is_pk": true
         },
@@ -1190,8 +1191,8 @@
           "is_fk": true,
           "name": "salesperson",
           "description": "Продавец",
-          "position": 1,
           "fk_table": "users",
+          "position": 1,
           "id": 420,
           "type": "fk",
           "is_pk": false
@@ -1235,8 +1236,8 @@
           "is_fk": false,
           "name": "tran_type",
           "description": "Тип транзакции",
-          "position": 3,
           "id": 377,
+          "position": 3,
           "type": "str",
           "is_pk": false
         },
@@ -1245,8 +1246,8 @@
           "is_fk": false,
           "name": "status",
           "description": "Статус",
-          "position": 4,
           "id": 378,
+          "position": 4,
           "type": "str",
           "is_pk": false
         },
@@ -1267,8 +1268,8 @@
           "name": "base_document_id",
           "description": "Документ-основание",
           "id": 381,
-          "fk_table": "wrh_documents",
           "position": 6,
+          "fk_table": "wrh_documents",
           "type": "fk",
           "is_pk": false
         },
@@ -1278,9 +1279,9 @@
           "is_fk": true,
           "name": "contractor_id",
           "description": "Контрагент",
-          "position": 7,
           "fk_table": "contractors",
           "id": 380,
+          "position": 7,
           "type": "fk",
           "is_pk": false
         },
@@ -1302,8 +1303,8 @@
           "is_fk": true,
           "name": "dest_wallet_id",
           "description": "Кошелек/Счет зачисления",
-          "id": 383,
           "position": 9,
+          "id": 383,
           "fk_table": "wallets",
           "type": "fk",
           "is_pk": false
@@ -1315,8 +1316,8 @@
           "name": "currency_id",
           "description": "Валюта",
           "id": 385,
-          "fk_table": "currencies",
           "position": 10,
+          "fk_table": "currencies",
           "type": "fk",
           "is_pk": false
         },
@@ -1331,7 +1332,6 @@
           "is_pk": false
         }
       ],
-      "assignment": "Финансы",
       "name": "cash_documents",
       "description": "Финансовые транзакции",
       "id": 72,
@@ -1359,9 +1359,9 @@
           "is_fk": true,
           "name": "receipts_wrh_lines_id",
           "description": "Товары по чеку",
-          "position": 1,
           "fk_table": "receipts_wrh_lines",
           "id": 479,
+          "position": 1,
           "type": "fk",
           "is_pk": false
         },
@@ -1372,8 +1372,8 @@
           "name": "recorder_id",
           "description": "Регистратор",
           "fk_table": "wrh_document_lines",
-          "position": 2,
           "id": 392,
+          "position": 2,
           "type": "fk",
           "is_pk": false
         },
@@ -1395,9 +1395,9 @@
           "is_fk": true,
           "name": "warehouse_id",
           "description": "Склад",
-          "fk_table": "warehouses",
-          "position": 4,
           "id": 441,
+          "position": 4,
+          "fk_table": "warehouses",
           "type": "fk",
           "is_pk": false
         },
@@ -1406,8 +1406,8 @@
           "is_fk": false,
           "name": "date_time",
           "description": "Дата и время",
-          "position": 5,
           "id": 387,
+          "position": 5,
           "type": "datetime",
           "is_pk": false
         },
@@ -1426,8 +1426,8 @@
           "is_fk": false,
           "name": "quantity",
           "description": "Количество",
-          "position": 7,
           "id": 390,
+          "position": 7,
           "type": "float",
           "is_pk": false
         }
@@ -1435,23 +1435,22 @@
       "assignment": "Склад",
       "name": "reg_inventory",
       "description": "Движения товаров",
-      "id": 73,
       "position": {
         "x": -261.4410181483988,
         "y": -629.2041477188418
       },
+      "id": 73,
       "category": "Регистр"
     },
     {
-      "assignment": "Финансы",
       "columns": [
         {
           "type_name": "PK",
           "is_fk": false,
           "name": "id",
           "description": "Первичный ключ, автоинкремент",
-          "position": 1,
           "id": 394,
+          "position": 1,
           "type": "pk",
           "is_pk": true
         },
@@ -1491,9 +1490,9 @@
           "is_fk": true,
           "name": "wrh_documents_id",
           "description": "Документ",
+          "fk_table": "wrh_documents",
           "id": 396,
           "position": 5,
-          "fk_table": "wrh_documents",
           "type": "fk",
           "is_pk": false
         },
@@ -1503,9 +1502,9 @@
           "is_fk": true,
           "name": "cash_documents_id",
           "description": "Документ",
-          "id": 402,
           "fk_table": "cash_documents",
           "position": 6,
+          "id": 402,
           "type": "fk",
           "is_pk": false
         },
@@ -1515,9 +1514,9 @@
           "is_fk": true,
           "name": "contractor_id",
           "description": "Контрагент",
-          "fk_table": "contractors",
           "position": 7,
           "id": 400,
+          "fk_table": "contractors",
           "type": "fk",
           "is_pk": false
         },
@@ -1528,8 +1527,8 @@
           "name": "currency_id",
           "description": "Валюта",
           "position": 8,
-          "fk_table": "currencies",
           "id": 401,
+          "fk_table": "currencies",
           "type": "fk",
           "is_pk": false
         },
@@ -1538,23 +1537,23 @@
           "is_fk": false,
           "name": "quantity",
           "description": "Количество",
-          "id": 398,
           "position": 9,
+          "id": 398,
           "type": "float",
           "is_pk": false
         }
       ],
+      "assignment": "Финансы",
       "name": "reg_settlements",
       "description": "Взаиморасчеты с контрагентами",
-      "id": 74,
       "position": {
         "x": -1714.4518999840573,
         "y": -562.2444432075132
       },
+      "id": 74,
       "category": "Регистр"
     },
     {
-      "assignment": "Финансы",
       "columns": [
         {
           "type_name": "PK",
@@ -1571,8 +1570,8 @@
           "is_fk": false,
           "name": "date_time",
           "description": "Дата и время",
-          "position": 2,
           "id": 404,
+          "position": 2,
           "type": "datetime",
           "is_pk": false
         },
@@ -1614,9 +1613,9 @@
           "is_fk": true,
           "name": "cash_documents_id",
           "description": "Документ",
-          "id": 407,
-          "position": 6,
           "fk_table": "cash_documents",
+          "position": 6,
+          "id": 407,
           "type": "fk",
           "is_pk": false
         },
@@ -1626,9 +1625,9 @@
           "is_fk": true,
           "name": "wallet_id",
           "description": "Кошелек",
-          "id": 408,
           "fk_table": "wallets",
           "position": 7,
+          "id": 408,
           "type": "fk",
           "is_pk": false
         },
@@ -1638,9 +1637,9 @@
           "is_fk": true,
           "name": "currency_id",
           "description": "Валюта",
+          "id": 409,
           "position": 8,
           "fk_table": "currencies",
-          "id": 409,
           "type": "fk",
           "is_pk": false
         },
@@ -1655,6 +1654,7 @@
           "is_pk": false
         }
       ],
+      "assignment": "Финансы",
       "name": "reg_cash",
       "description": "Движение денег",
       "id": 75,
@@ -1665,15 +1665,14 @@
       "category": "Регистр"
     },
     {
-      "assignment": "Общее",
       "columns": [
         {
           "type_name": "PK",
           "is_fk": false,
           "name": "id",
           "description": "Первичный ключ, автоинкремент",
-          "id": 411,
           "position": 1,
+          "id": 411,
           "type": "pk",
           "is_pk": true
         },
@@ -1683,9 +1682,9 @@
           "is_fk": true,
           "name": "primary_user",
           "description": "Главный аккаунт",
-          "fk_table": "users",
-          "position": 1,
           "id": 453,
+          "position": 1,
+          "fk_table": "users",
           "type": "fk",
           "is_pk": false
         },
@@ -1694,8 +1693,8 @@
           "is_fk": false,
           "name": "name",
           "description": "Наименование",
-          "id": 412,
           "position": 2,
+          "id": 412,
           "type": "str",
           "is_pk": false
         },
@@ -1724,8 +1723,8 @@
           "is_fk": false,
           "name": "is_active",
           "description": "Активен",
-          "id": 415,
           "position": 5,
+          "id": 415,
           "type": "bool",
           "is_pk": false
         },
@@ -1735,9 +1734,9 @@
           "is_fk": true,
           "name": "base_currency_id",
           "description": "Базовая валюта",
+          "fk_table": "currencies",
           "id": 416,
           "position": 6,
-          "fk_table": "currencies",
           "type": "fk",
           "is_pk": false
         },
@@ -1746,8 +1745,8 @@
           "is_fk": false,
           "name": "strict_cash_control",
           "description": "Контроль отрицательных остатков по ДДС",
-          "id": 417,
           "position": 7,
+          "id": 417,
           "type": "bool",
           "is_pk": false
         },
@@ -1756,12 +1755,13 @@
           "is_fk": false,
           "name": "has_tnved",
           "description": "Использование ТН ВЭД",
-          "id": 418,
           "position": 8,
+          "id": 418,
           "type": "bool",
           "is_pk": false
         }
       ],
+      "assignment": "Общее",
       "name": "organizations",
       "description": "Организации",
       "id": 76,
@@ -1831,8 +1831,8 @@
           "is_fk": false,
           "name": "name",
           "description": "Наименование",
-          "position": 2,
           "id": 426,
+          "position": 2,
           "type": "str",
           "is_pk": false
         },
@@ -1851,8 +1851,8 @@
           "is_fk": false,
           "name": "is_active",
           "description": "Активен",
-          "position": 4,
           "id": 428,
+          "position": 4,
           "type": "bool",
           "is_pk": false
         }
@@ -1860,22 +1860,23 @@
       "assignment": "Финансы",
       "name": "cashflow_categories",
       "description": "Виды статей СДиР",
+      "id": 78,
       "position": {
         "x": -724.7542868659388,
         "y": 777.4851134468754
       },
-      "id": 78,
       "category": "Справочник"
     },
     {
+      "assignment": "Финансы",
       "columns": [
         {
           "type_name": "PK",
           "is_fk": false,
           "name": "id",
           "description": "Первичный ключ, автоинкремент",
-          "id": 429,
           "position": 1,
+          "id": 429,
           "type": "pk",
           "is_pk": true
         },
@@ -1894,8 +1895,8 @@
           "is_fk": false,
           "name": "description",
           "description": "Описание",
-          "position": 3,
           "id": 431,
+          "position": 3,
           "type": "text",
           "is_pk": false
         },
@@ -1904,13 +1905,12 @@
           "is_fk": false,
           "name": "is_active",
           "description": "Активен",
-          "id": 432,
           "position": 4,
+          "id": 432,
           "type": "bool",
           "is_pk": false
         }
       ],
-      "assignment": "Финансы",
       "name": "cost_behaviors",
       "description": "Поведения затрат",
       "id": 79,
@@ -1928,8 +1928,8 @@
           "is_fk": false,
           "name": "id",
           "description": "Первичный ключ, автоинкремент",
-          "position": 1,
           "id": 433,
+          "position": 1,
           "type": "pk",
           "is_pk": true
         },
@@ -1938,8 +1938,8 @@
           "is_fk": false,
           "name": "name",
           "description": "Наименование",
-          "position": 2,
           "id": 434,
+          "position": 2,
           "type": "str",
           "is_pk": false
         },
@@ -1959,9 +1959,9 @@
           "is_fk": true,
           "name": "cashflow_categories_id",
           "description": "вид статьи",
+          "fk_table": "cashflow_categories",
           "id": 436,
           "position": 4,
-          "fk_table": "cashflow_categories",
           "type": "fk",
           "is_pk": false
         },
@@ -1970,8 +1970,8 @@
           "is_fk": false,
           "name": "is_pnl_calculated",
           "description": "Учитывать в ОПиУ/себестоимости.",
-          "id": 437,
           "position": 5,
+          "id": 437,
           "type": "bool",
           "is_pk": false
         },
@@ -1981,9 +1981,9 @@
           "is_fk": true,
           "name": "cost_behavior_id",
           "description": "Поведение затрат",
+          "id": 438,
           "position": 6,
           "fk_table": "cost_behaviors",
-          "id": 438,
           "type": "fk",
           "is_pk": false
         },
@@ -1992,31 +1992,30 @@
           "is_fk": false,
           "name": "is_active",
           "description": "Активен",
-          "position": 7,
           "id": 439,
+          "position": 7,
           "type": "bool",
           "is_pk": false
         }
       ],
       "name": "cashflow_items",
       "description": "Статьи Доходов и Расходов",
+      "id": 80,
       "position": {
         "x": -295.38635951733875,
         "y": 640.4701921484268
       },
-      "id": 80,
       "category": "Справочник"
     },
     {
-      "assignment": "Продажи",
       "columns": [
         {
           "type_name": "PK",
           "is_fk": false,
           "name": "id",
           "description": "Первичный ключ, автоинкремент",
-          "id": 442,
           "position": 1,
+          "id": 442,
           "type": "pk",
           "is_pk": true
         },
@@ -2026,9 +2025,9 @@
           "is_fk": true,
           "name": "departments_id",
           "description": "Отдел",
+          "position": 1,
           "id": 462,
           "fk_table": "departments",
-          "position": 1,
           "type": "fk",
           "is_pk": false
         },
@@ -2037,8 +2036,8 @@
           "is_fk": false,
           "name": "shift_date",
           "description": "Дата смены",
-          "id": 444,
           "position": 2,
+          "id": 444,
           "type": "date",
           "is_pk": false
         },
@@ -2047,8 +2046,8 @@
           "is_fk": false,
           "name": "shift_status",
           "description": "Статус документа",
-          "position": 3,
           "id": 445,
+          "position": 3,
           "type": "str",
           "is_pk": false
         },
@@ -2058,9 +2057,9 @@
           "is_fk": true,
           "name": "cashier_id",
           "description": "Кассир",
-          "id": 448,
-          "position": 4,
           "fk_table": "users",
+          "position": 4,
+          "id": 448,
           "type": "fk",
           "is_pk": false
         },
@@ -2069,8 +2068,8 @@
           "is_fk": false,
           "name": "start_time",
           "description": "Время открытия",
-          "position": 5,
           "id": 449,
+          "position": 5,
           "type": "time",
           "is_pk": false
         },
@@ -2089,8 +2088,8 @@
           "is_fk": false,
           "name": "create_date_time",
           "description": "Создан",
-          "id": 446,
           "position": 7,
+          "id": 446,
           "type": "datetime",
           "is_pk": false
         },
@@ -2099,12 +2098,13 @@
           "is_fk": false,
           "name": "update_date_time",
           "description": "Изменён",
-          "id": 447,
           "position": 8,
+          "id": 447,
           "type": "datetime",
           "is_pk": false
         }
       ],
+      "assignment": "Продажи",
       "name": "cashier_shifts",
       "description": "Кассовая Смена",
       "position": {
@@ -2122,8 +2122,8 @@
           "is_fk": false,
           "name": "id",
           "description": "Первичный ключ, автоинкремент",
-          "position": 1,
           "id": 454,
+          "position": 1,
           "type": "pk",
           "is_pk": true
         },
@@ -2134,8 +2134,8 @@
           "name": "cashier_shifts_id",
           "description": "Кассовая смена",
           "fk_table": "cashier_shifts",
-          "position": 2,
           "id": 460,
+          "position": 2,
           "type": "fk",
           "is_pk": false
         },
@@ -2207,8 +2207,8 @@
           "is_fk": false,
           "name": "id",
           "description": "Первичный ключ, автоинкремент",
-          "id": 465,
           "position": 1,
+          "id": 465,
           "type": "pk",
           "is_pk": true
         },
@@ -2218,9 +2218,9 @@
           "is_fk": true,
           "name": "header_id",
           "description": "Ссылка на шапку документа",
-          "position": 2,
           "fk_table": "receipts",
           "id": 466,
+          "position": 2,
           "type": "fk",
           "is_pk": false
         },
@@ -2229,8 +2229,8 @@
           "is_fk": false,
           "name": "line_no",
           "description": "Номер строки",
-          "id": 467,
           "position": 3,
+          "id": 467,
           "type": "int",
           "is_pk": false
         },
@@ -2249,8 +2249,8 @@
           "is_fk": false,
           "name": "unit_price",
           "description": "Цена за единицу",
-          "position": 5,
           "id": 469,
+          "position": 5,
           "type": "float",
           "is_pk": false
         },
@@ -2267,15 +2267,14 @@
       ],
       "name": "receipt_cash",
       "description": "Оплаты по чеку",
+      "id": 83,
       "position": {
         "x": -1268.5503729982076,
         "y": -688.0861489970762
       },
-      "id": 83,
       "category": "Детали"
     },
     {
-      "assignment": "Продажи",
       "columns": [
         {
           "type_name": "PK",
@@ -2294,8 +2293,8 @@
           "name": "receipt_id",
           "description": "Ссылка на чек",
           "id": 473,
-          "fk_table": "receipts",
           "position": 2,
+          "fk_table": "receipts",
           "type": "fk",
           "is_pk": false
         },
@@ -2304,8 +2303,8 @@
           "is_fk": false,
           "name": "line_no",
           "description": "Номер строки",
-          "id": 474,
           "position": 3,
+          "id": 474,
           "type": "int",
           "is_pk": false
         },
@@ -2345,21 +2344,227 @@
           "is_fk": true,
           "name": "product_id",
           "description": "Товар",
-          "id": 478,
           "position": 7,
+          "id": 478,
           "fk_table": "products",
           "type": "fk",
           "is_pk": false
         }
       ],
+      "assignment": "Продажи",
       "name": "receipts_wrh_lines",
       "description": "Строки товарного чека",
+      "id": 84,
       "position": {
         "x": -1272.4926078341716,
         "y": -362.87562871513506
       },
-      "id": 84,
       "category": "Детали"
+    },
+    {
+      "columns": [
+        {
+          "type_name": "PK",
+          "is_fk": false,
+          "name": "id",
+          "description": "Первичный ключ, автоинкремент",
+          "id": 480,
+          "position": 1,
+          "type": "pk",
+          "is_pk": true
+        },
+        {
+          "fk_column": "id",
+          "type_name": "FK",
+          "is_fk": true,
+          "name": "organization_id",
+          "description": "Организация",
+          "fk_table": "organizations",
+          "position": 2,
+          "id": 484,
+          "type": "fk",
+          "is_pk": false
+        },
+        {
+          "fk_column": "id",
+          "type_name": "FK",
+          "is_fk": true,
+          "name": "plan_id",
+          "description": "Тарифный план",
+          "fk_table": "plans ",
+          "position": 3,
+          "id": 491,
+          "type": "fk",
+          "is_pk": false
+        },
+        {
+          "type_name": "INT",
+          "is_fk": false,
+          "name": "cost",
+          "description": "Стоимость",
+          "position": 4,
+          "id": 485,
+          "type": "int",
+          "is_pk": false
+        },
+        {
+          "type_name": "DATETIME",
+          "is_fk": false,
+          "name": "create_date_time",
+          "description": "Дата и время создания записи",
+          "id": 481,
+          "position": 5,
+          "type": "datetime",
+          "is_pk": false
+        },
+        {
+          "type_name": "DATETIME",
+          "is_fk": false,
+          "name": "update_date_time",
+          "description": "Дата и время последнего обновления",
+          "position": 6,
+          "id": 482,
+          "type": "datetime",
+          "is_pk": false
+        },
+        {
+          "type_name": "BOOL",
+          "is_fk": false,
+          "name": "is_active",
+          "description": "Признак активности записи",
+          "id": 483,
+          "position": 7,
+          "type": "bool",
+          "is_pk": false
+        }
+      ],
+      "assignment": "Финансы",
+      "name": "fees_for_organizations",
+      "description": "Оплаты за организации",
+      "position": {
+        "x": -1218.6926338354176,
+        "y": 449.4863299066592
+      },
+      "id": 85,
+      "category": "Транзакции"
+    },
+    {
+      "assignment": "Финансы",
+      "columns": [
+        {
+          "type_name": "PK",
+          "is_fk": false,
+          "name": "id",
+          "description": "Первичный ключ, автоинкремент",
+          "id": 486,
+          "position": 1,
+          "type": "pk",
+          "is_pk": true
+        },
+        {
+          "type_name": "STR",
+          "is_fk": false,
+          "name": "name",
+          "description": "Наименование",
+          "position": 2,
+          "id": 487,
+          "type": "str",
+          "is_pk": false
+        },
+        {
+          "type_name": "TEXT",
+          "is_fk": false,
+          "name": "description",
+          "description": "Описание",
+          "position": 3,
+          "id": 488,
+          "type": "text",
+          "is_pk": false
+        },
+        {
+          "type_name": "BOOL",
+          "is_fk": false,
+          "name": "is_active",
+          "description": "Активен",
+          "id": 489,
+          "position": 4,
+          "type": "bool",
+          "is_pk": false
+        },
+        {
+          "type_name": "INT",
+          "is_fk": false,
+          "name": "cost",
+          "description": "Стоимость",
+          "position": 5,
+          "id": 490,
+          "type": "int",
+          "is_pk": false
+        }
+      ],
+      "name": "plans ",
+      "description": "Планы",
+      "id": 86,
+      "position": {
+        "x": -1564.2125656842077,
+        "y": 598.0716930907806
+      },
+      "category": "Справочник"
+    },
+    {
+      "columns": [
+        {
+          "type_name": "PK",
+          "is_fk": false,
+          "name": "id",
+          "description": "Первичный ключ, автоинкремент",
+          "position": 1,
+          "id": 492,
+          "type": "pk",
+          "is_pk": true
+        },
+        {
+          "fk_column": "id",
+          "type_name": "FK",
+          "is_fk": true,
+          "name": "plan_id",
+          "description": "План",
+          "position": 2,
+          "id": 493,
+          "fk_table": "plans ",
+          "type": "fk",
+          "is_pk": false
+        },
+        {
+          "type_name": "DATETIME",
+          "is_fk": false,
+          "name": "date_time",
+          "description": "Дата и время",
+          "position": 3,
+          "id": 494,
+          "type": "datetime",
+          "is_pk": false
+        },
+        {
+          "type_name": "INT",
+          "is_fk": false,
+          "name": "cost",
+          "description": "Стоимость",
+          "id": 495,
+          "position": 4,
+          "type": "int",
+          "is_pk": false
+        }
+      ],
+      "assignment": "Финансы",
+      "name": "plan_price_history",
+      "description": "История стоимости планов",
+      "id": 87,
+      "position": {
+        "x": -1223.4096294920566,
+        "y": 759.6287943306581
+      },
+      "category": "Справочник"
     }
   ],
   "relations": [
@@ -2726,11 +2931,32 @@
       "from_table": "receipts_wrh_lines",
       "type": "many_to_one",
       "from_column": "product_id"
+    },
+    {
+      "to_column": "id",
+      "to_table": "organizations",
+      "from_table": "fees_for_organizations",
+      "type": "many_to_one",
+      "from_column": "organization_id"
+    },
+    {
+      "to_column": "id",
+      "to_table": "plans ",
+      "from_table": "fees_for_organizations",
+      "type": "many_to_one",
+      "from_column": "plan_id"
+    },
+    {
+      "to_column": "id",
+      "to_table": "plans ",
+      "from_table": "plan_price_history",
+      "type": "many_to_one",
+      "from_column": "plan_id"
     }
   ],
   "meta": {
-    "table_count": 30,
-    "column_count": 186,
-    "relation_count": 52
+    "table_count": 33,
+    "column_count": 202,
+    "relation_count": 55
   }
 }
