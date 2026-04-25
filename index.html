@@ -1,0 +1,62 @@
+<!-- ... existing code ... -->
+<div class="toolbar">
+    <button class="btn" id="btn-import-open" title="Импорт JSON">
+<!-- ... existing code ... -->
+    <button class="btn" id="btn-reset" title="По центру">
+        <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path></svg>
+    </button>
+</div>
+
+<script>
+    const SVG_ICON_PK = `<svg class="pk-icon" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 8a6 6 0 01-7.743 5.743L10 14l-1 1-1 1H6v2H2v-4l4.257-4.257A6 6 0 1118 8zm-6-4a1 1 0 100 2 2 2 0 012 2 1 1 0 102 0 4 4 0 00-4-4z" clip-rule="evenodd"></path></svg>`;
+    const SVG_ICON_FK = `<svg class="fk-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>`;
+
+    // State variables
+    let schemaData = null;
+    let selectedTableId = null;
+    let isDarkTheme = false;
+
+    function normalizeCoordinates() {
+<!-- ... existing code ... -->
+    function centerView() {
+        if (!schemaData) return;
+        const windowWidth = window.innerWidth;
+        const windowHeight = window.innerHeight;
+        
+        let maxX = 0, maxY = 0;
+<!-- ... existing code ... -->
+        translateX = 50;
+        translateY = 50;
+        applyTransform();
+    }
+
+    async function loadSchema() {
+        try {
+            const response = await fetch('DB.json');
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            schemaData = await response.json();
+            
+            normalizeCoordinates();
+            renderTables();
+            
+            setTimeout(() => {
+                renderLines();
+                centerView();
+                initGlobalEvents();
+            }, 100);
+        } catch (error) {
+            console.error("Ошибка загрузки DB.json:", error);
+            document.getElementById('tables-layer').innerHTML = `
+                <div style="position: absolute; top: 50vh; left: 50vw; transform: translate(-50%, -50%); text-align: center; color: var(--text-main); font-size: 1.2rem; background: var(--card-bg); padding: 2rem; border-radius: 1rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+                    <h3>Ошибка загрузки DB.json</h3>
+                    <p class="text-sm mt-2 text-gray-500">Для работы локально запустите локальный сервер (например, Live Server). На GitHub Pages файл загрузится автоматически.</p>
+                </div>
+            `;
+        }
+    }
+
+    window.onload = loadSchema;
+</script>
+
+</body>
+</html>
