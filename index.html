@@ -1,61 +1,722 @@
-<!-- ... existing code ... -->
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>EAV Pattern & ERP Core - ER Diagram</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --bg-color: #f3f4f6;
+            --grid-color: #e5e7eb;
+            --card-bg: white;
+            --card-border: #e5e7eb;
+            --text-main: #374151;
+            --text-muted: #9ca3af;
+            --line-color: #9ca3af;
+            --line-highlight: #3b82f6;
+            --line-outgoing: #f59e0b; /* Orange for FK -> PK */
+            --line-incoming: #10b981; /* Green for PK <- FK */
+            --table-highlight-border: #3b82f6;
+            --table-related-border: #10b981;
+            --col-highlight-bg: #eff6ff;
+            --toolbar-bg: white;
+            --toolbar-btn-hover: #e5e7eb;
+            --row-border: #f3f4f6;
+            --panel-bg: white;
+            --panel-border: #e5e7eb;
+            --modal-bg: rgba(0,0,0,0.5);
+        }
+
+        body.dark-theme {
+            --bg-color: #111827;
+            --grid-color: #374151;
+            --card-bg: #1f2937;
+            --card-border: #4b5563;
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --line-color: #6b7280;
+            --line-highlight: #60a5fa;
+            --line-outgoing: #fbbf24;
+            --line-incoming: #34d399;
+            --table-highlight-border: #60a5fa;
+            --table-related-border: #34d399;
+            --col-highlight-bg: #374151;
+            --toolbar-bg: #1f2937;
+            --toolbar-btn-hover: #374151;
+            --row-border: #374151;
+            --panel-bg: #1f2937;
+            --panel-border: #4b5563;
+            --modal-bg: rgba(0,0,0,0.7);
+        }
+
+        body { font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; overflow: hidden; background-color: var(--bg-color); color: var(--text-main); margin: 0; padding: 0; transition: background-color 0.3s; }
+        .canvas-container { position: relative; width: 100vw; height: 100vh; overflow: hidden; cursor: grab; background-image: radial-gradient(var(--grid-color) 1px, transparent 1px); background-size: 20px 20px; transition: background-color 0.3s; touch-action: none; /* Prevent default browser scroll/zoom on mobile */ }
+        .canvas-container.grabbing { cursor: grabbing; }
+        .zoom-layer { position: absolute; transform-origin: 0 0; width: 0; height: 0; }
+        
+        .table-card { position: absolute; background: var(--card-bg); border-radius: 0.5rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); border: 2px solid var(--card-border); width: 260px; user-select: none; transition: opacity 0.2s, box-shadow 0.2s, border-color 0.2s, background-color 0.3s; z-index: 1; touch-action: none; }
+        .table-header { padding: 0.5rem 1rem; border-top-left-radius: 0.4rem; border-top-right-radius: 0.4rem; color: white; font-weight: 600; font-size: 0.875rem; display: flex; justify-content: space-between; align-items: center; cursor: move; }
+        .table-body { padding: 0.5rem 0; font-size: 0.75rem; }
+        .column-row { display: flex; justify-content: space-between; padding: 0.25rem 1rem; border-bottom: 1px solid var(--row-border); position: relative; transition: background-color 0.2s; }
+        .column-row:last-child { border-bottom: none; }
+        .column-name { font-weight: 500; color: var(--text-main); display: flex; align-items: center; gap: 0.25rem; }
+        .column-type { color: var(--text-muted); font-family: monospace; }
+        
+        .pk-icon { color: #eab308; width: 12px; height: 12px; min-width: 12px; }
+        .fk-icon { color: #60a5fa; width: 12px; height: 12px; min-width: 12px; }
+        
+        /* Category Colors */
+        .cat-Справочник { background-color: #3b82f6; } 
+        .cat-Детали { background-color: #10b981; } 
+        .cat-Шапка { background-color: #f59e0b; } 
+        .cat-Регистр { background-color: #8b5cf6; } 
+        .cat-Транзакции { background-color: #ef4444; } 
+        .cat-default { background-color: #4b5563; } 
+
+        #svg-layer { position: absolute; top: 0; left: 0; overflow: visible; pointer-events: none; z-index: 0; }
+        .relation-line { fill: none; stroke: var(--line-color); stroke-width: 1.5; opacity: 0.6; transition: stroke 0.2s, stroke-width 0.2s, opacity 0.2s; }
+        
+        /* Highlight states */
+        .table-card.dimmed { opacity: 0.3; }
+        .table-card.highlighted { border-color: var(--table-highlight-border); box-shadow: 0 0 12px rgba(59, 130, 246, 0.6); z-index: 10; }
+        .table-card.related-outgoing { border-color: var(--line-outgoing); box-shadow: 0 0 10px rgba(245, 158, 11, 0.5); z-index: 5; }
+        .table-card.related-incoming { border-color: var(--line-incoming); box-shadow: 0 0 10px rgba(16, 185, 129, 0.5); z-index: 5; }
+        
+        .relation-line.dimmed-line { opacity: 0.1; }
+        .relation-line.line-outgoing { stroke: var(--line-outgoing); stroke-width: 3; opacity: 1; z-index: 20; stroke-dasharray: 5, 5; animation: dash 1s linear infinite; }
+        .relation-line.line-incoming { stroke: var(--line-incoming); stroke-width: 3; opacity: 1; z-index: 20; }
+        
+        @keyframes dash {
+            to { stroke-dashoffset: -10; }
+        }
+
+        .column-row.col-outgoing { background-color: rgba(245, 158, 11, 0.1); font-weight: 700; border-radius: 4px; }
+        .column-row.col-incoming { background-color: rgba(16, 185, 129, 0.1); font-weight: 700; border-radius: 4px; }
+        .column-row.highlighted-col { background-color: var(--col-highlight-bg); font-weight: 700; border-radius: 4px; }
+
+        .toolbar { position: absolute; bottom: 1.5rem; right: 1.5rem; background: var(--toolbar-bg); padding: 0.5rem; border-radius: 0.5rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); display: flex; gap: 0.5rem; z-index: 40; transition: background-color 0.3s; }
+        .btn { padding: 0.5rem; background: transparent; border-radius: 0.375rem; cursor: pointer; transition: background 0.2s, color 0.2s; border: none; outline: none; color: var(--text-main); display: flex; align-items: center; justify-content: center; }
+        .btn:hover { background: var(--toolbar-btn-hover); }
+
+        /* Left Panel */
+        #details-panel { background: var(--panel-bg); border-right: 1px solid var(--panel-border); color: var(--text-main); }
+        .detail-item { padding: 0.75rem; border-bottom: 1px solid var(--row-border); }
+        .detail-item:last-child { border-bottom: none; }
+
+        /* Modal */
+        #json-modal-overlay { background: var(--modal-bg); backdrop-filter: blur(2px); }
+        #json-modal { background: var(--panel-bg); color: var(--text-main); border: 1px solid var(--panel-border); }
+        textarea.custom-scrollbar::-webkit-scrollbar { width: 8px; }
+        textarea.custom-scrollbar::-webkit-scrollbar-thumb { background-color: var(--text-muted); border-radius: 4px; }
+
+        /* Mobile Adaptations */
+        @media (max-width: 640px) {
+            .toolbar {
+                bottom: 1rem;
+                right: 50%;
+                transform: translateX(50%);
+                width: max-content;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div id="app" class="canvas-container">
+    <div id="zoom-layer" class="zoom-layer">
+        <svg id="svg-layer"></svg>
+        <div id="tables-layer"></div>
+    </div>
+</div>
+
+<!-- Left Panel for Details -->
+<aside id="details-panel" class="fixed top-0 left-0 h-full w-full sm:w-80 shadow-2xl z-50 transform -translate-x-full transition-transform duration-300 flex flex-col overflow-hidden">
+    <div class="p-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center bg-gray-50 dark:bg-gray-800">
+        <h2 id="panel-title" class="text-lg font-bold truncate">Детали таблицы</h2>
+        <button id="btn-close-panel" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 p-2 -mr-2">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+    </div>
+    <div class="p-4 overflow-y-auto flex-1 custom-scrollbar pb-24">
+        <div class="mb-4">
+            <span id="panel-category" class="text-xs font-semibold px-2 py-1 rounded-full text-white bg-gray-500"></span>
+        </div>
+        <p id="panel-desc" class="text-sm mb-6 text-gray-600 dark:text-gray-300"></p>
+        
+        <h3 class="text-sm font-bold mb-2 uppercase tracking-wider text-gray-500 dark:text-gray-400">Колонки</h3>
+        <div id="panel-cols" class="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden text-sm">
+            <!-- Columns will be injected here -->
+        </div>
+    </div>
+</aside>
+
+<!-- JSON Import Modal -->
+<div id="json-modal-overlay" class="fixed inset-0 z-[60] flex items-center justify-center hidden p-4">
+    <div id="json-modal" class="w-full max-w-2xl rounded-lg shadow-2xl flex flex-col max-h-[90vh]">
+        <div class="p-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
+            <h2 class="text-xl font-bold">Импорт JSON схемы</h2>
+            <button id="btn-close-modal" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 p-1">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
+        <div class="p-4 flex-1 overflow-hidden flex flex-col">
+            <p class="text-sm text-gray-500 dark:text-gray-400 mb-2">Вставьте JSON массив со схемой базы данных или убедитесь, что файл DB.json загружен.</p>
+            <textarea id="json-input" class="w-full flex-1 p-3 rounded border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100 font-mono text-xs sm:text-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 custom-scrollbar" placeholder="{
+  &quot;tables&quot;: [...],
+  &quot;relations&quot;: [...]
+}"></textarea>
+        </div>
+        <div class="p-4 border-t border-gray-200 dark:border-gray-700 flex justify-end gap-3">
+            <button id="btn-cancel-json" class="px-4 py-2 rounded font-medium bg-gray-200 text-gray-800 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600 transition-colors text-sm sm:text-base">Отмена</button>
+            <button id="btn-render-json" class="px-4 py-2 rounded font-medium bg-blue-600 text-white hover:bg-blue-700 transition-colors text-sm sm:text-base">Построить</button>
+        </div>
+    </div>
+</div>
+
+<!-- Toolbar -->
 <div class="toolbar">
     <button class="btn" id="btn-import-open" title="Импорт JSON">
-<!-- ... existing code ... -->
+        <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+    </button>
+    <div class="w-px h-6 bg-gray-300 dark:bg-gray-600 self-center mx-1"></div>
+    <button class="btn" id="btn-theme" title="Переключить тему">
+        <svg id="icon-sun" class="w-5 h-5 sm:w-6 sm:h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+        <svg id="icon-moon" class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+    </button>
+    <div class="w-px h-6 bg-gray-300 dark:bg-gray-600 self-center mx-1"></div>
+    <button class="btn" id="btn-zoom-in" title="Увеличить">
+        <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"></path></svg>
+    </button>
+    <button class="btn" id="btn-zoom-out" title="Уменьшить">
+        <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM13 10H7"></path></svg>
+    </button>
     <button class="btn" id="btn-reset" title="По центру">
         <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path></svg>
     </button>
 </div>
 
 <script>
+    // Инициализация пустой схемы, пока мы не загрузили файл DB.json
+    let schemaData = { tables: [], relations: [] };
+
     const SVG_ICON_PK = `<svg class="pk-icon" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 8a6 6 0 01-7.743 5.743L10 14l-1 1-1 1H6v2H2v-4l4.257-4.257A6 6 0 1118 8zm-6-4a1 1 0 100 2 2 2 0 012 2 1 1 0 102 0 4 4 0 00-4-4z" clip-rule="evenodd"></path></svg>`;
     const SVG_ICON_FK = `<svg class="fk-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>`;
 
     // State variables
-    let schemaData = null;
     let selectedTableId = null;
     let isDarkTheme = false;
 
     function normalizeCoordinates() {
-<!-- ... existing code ... -->
+        if (!schemaData.tables || schemaData.tables.length === 0) return;
+        let minX = Infinity, minY = Infinity;
+        schemaData.tables.forEach(t => {
+            if(t.position && t.position.x < minX) minX = t.position.x;
+            if(t.position && t.position.y < minY) minY = t.position.y;
+        });
+        
+        schemaData.tables.forEach(t => {
+            if (t.position) {
+                t.position.x = t.position.x - minX + 200;
+                t.position.y = t.position.y - minY + 200;
+            } else {
+                t.position = {x: 200, y: 200}; // фоллбэк
+            }
+        });
+    }
+
+    function renderTables() {
+        const container = document.getElementById('tables-layer');
+        let html = '';
+
+        if (!schemaData.tables) return;
+
+        schemaData.tables.forEach(table => {
+            const catClass = table.category ? `cat-${table.category}` : 'cat-default';
+            
+            let columnsHtml = '';
+            table.columns.forEach(col => {
+                const isPK = col.is_pk || col.type_name === 'PK';
+                const isFK = col.is_fk || col.type_name === 'FK';
+                const icon = isPK ? SVG_ICON_PK : (isFK ? SVG_ICON_FK : '');
+                
+                columnsHtml += `
+                    <div class="column-row" id="col-${table.name}-${col.name}">
+                        <div class="column-name">
+                            ${icon}
+                            <span>${col.name}</span>
+                        </div>
+                        <div class="column-type">${col.type_name || col.type}</div>
+                    </div>
+                `;
+            });
+
+            html += `
+                <div class="table-card" id="tbl-${table.name}" data-name="${table.name}" style="left: ${table.position.x}px; top: ${table.position.y}px;">
+                    <div class="table-header ${catClass}">
+                        <span>${table.name}</span>
+                        <span class="opacity-75 font-normal">${table.category || ''}</span>
+                    </div>
+                    <div class="table-body">
+                        ${columnsHtml}
+                    </div>
+                </div>
+            `;
+        });
+        container.innerHTML = html;
+        
+        setupTableInteractions();
+    }
+
+    function renderLines() {
+        const svg = document.getElementById('svg-layer');
+        let pathsHtml = `
+            <defs>
+                <marker id="marker-default" viewBox="0 -5 10 10" refX="8" refY="0" markerWidth="6" markerHeight="6" orient="auto">
+                    <path d="M0,-5L10,0L0,5" fill="var(--line-color)" />
+                </marker>
+                <marker id="marker-outgoing" viewBox="0 -5 10 10" refX="8" refY="0" markerWidth="6" markerHeight="6" orient="auto">
+                    <path d="M0,-5L10,0L0,5" fill="var(--line-outgoing)" />
+                </marker>
+                <marker id="marker-incoming" viewBox="0 -5 10 10" refX="8" refY="0" markerWidth="6" markerHeight="6" orient="auto">
+                    <path d="M0,-5L10,0L0,5" fill="var(--line-incoming)" />
+                </marker>
+            </defs>
+        `;
+
+        let maxX = 0, maxY = 0;
+        const tables = document.querySelectorAll('.table-card');
+        tables.forEach(t => {
+            const right = t.offsetLeft + t.offsetWidth;
+            const bottom = t.offsetTop + t.offsetHeight;
+            if (right > maxX) maxX = right;
+            if (bottom > maxY) maxY = bottom;
+        });
+        
+        svg.style.width = (maxX + 500) + 'px';
+        svg.style.height = (maxY + 500) + 'px';
+
+        if (!schemaData.relations) return;
+
+        schemaData.relations.forEach((rel, index) => {
+            const fromEl = document.getElementById(`col-${rel.from_table}-${rel.from_column}`);
+            const toEl = document.getElementById(`col-${rel.to_table}-${rel.to_column}`);
+            const fromTableEl = document.getElementById(`tbl-${rel.from_table}`);
+            const toTableEl = document.getElementById(`tbl-${rel.to_table}`);
+
+            if (!fromEl || !toEl || !fromTableEl || !toTableEl) return;
+
+            const fromRect = {
+                left: fromTableEl.offsetLeft,
+                top: fromTableEl.offsetTop + fromEl.offsetTop,
+                width: fromTableEl.offsetWidth,
+                height: fromEl.offsetHeight
+            };
+
+            const toRect = {
+                left: toTableEl.offsetLeft,
+                top: toTableEl.offsetTop + toEl.offsetTop,
+                width: toTableEl.offsetWidth,
+                height: toEl.offsetHeight
+            };
+
+            let x1, y1, x2, y2;
+
+            if (fromRect.left < toRect.left) {
+                x1 = fromRect.left + fromRect.width;
+                y1 = fromRect.top + fromRect.height / 2;
+                x2 = toRect.left;
+                y2 = toRect.top + toRect.height / 2;
+            } else {
+                x1 = fromRect.left;
+                y1 = fromRect.top + fromRect.height / 2;
+                x2 = toRect.left + toRect.width;
+                y2 = toRect.top + toRect.height / 2;
+            }
+
+            const offset = Math.max(Math.abs(x2 - x1) * 0.4, 50);
+            const d = `M ${x1} ${y1} C ${x1 < x2 ? x1 + offset : x1 - offset} ${y1}, ${x1 < x2 ? x2 - offset : x2 + offset} ${y2}, ${x2} ${y2}`;
+
+            pathsHtml += `<path id="line-${index}" class="relation-line" d="${d}" marker-end="url(#marker-default)" />`;
+        });
+
+        svg.innerHTML = pathsHtml;
+    }
+
+    // Viewport & Pan Logic
+    const zoomLayer = document.getElementById('zoom-layer');
+    const app = document.getElementById('app');
+    
+    let translateX = 0, translateY = 0, scale = 1;
+    let isCanvasDragging = false, startX, startY;
+
+    // Touch zoom logic
+    let initialPinchDist = null;
+    let initialPinchScale = null;
+
+    // Table Dragging Logic
+    let isTableDragging = false;
+    let draggedTableObj = null;
+    let tableDragOffsetX = 0, tableDragOffsetY = 0;
+
+    function applyTransform() {
+        zoomLayer.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+    }
+
+    function selectHighlightTable(tableName) {
+        selectedTableId = tableName;
+        updateHighlights();
+        showTableDetails(tableName);
+    }
+
+    function clearHighlights() {
+        selectedTableId = null;
+        updateHighlights();
+        closePanel();
+    }
+
+    function updateHighlights() {
+        document.querySelectorAll('.table-card').forEach(el => el.classList.remove('highlighted', 'related-outgoing', 'related-incoming', 'dimmed'));
+        document.querySelectorAll('.column-row').forEach(el => el.classList.remove('highlighted-col', 'col-outgoing', 'col-incoming'));
+        
+        document.querySelectorAll('.relation-line').forEach(el => {
+            el.classList.remove('highlighted-line', 'line-outgoing', 'line-incoming', 'dimmed-line');
+            el.setAttribute('marker-end', 'url(#marker-default)');
+        });
+
+        if (!selectedTableId) return;
+
+        const mainTableEl = document.getElementById(`tbl-${selectedTableId}`);
+        if(mainTableEl) mainTableEl.classList.add('highlighted');
+
+        if(schemaData.relations) {
+            schemaData.relations.forEach((rel, index) => {
+                const isFrom = rel.from_table === selectedTableId;
+                const isTo = rel.to_table === selectedTableId;
+
+                if (isFrom || isTo) {
+                    const relatedName = isFrom ? rel.to_table : rel.from_table;
+                    const relatedEl = document.getElementById(`tbl-${relatedName}`);
+                    if(relatedEl && relatedName !== selectedTableId) {
+                        relatedEl.classList.add(isFrom ? 'related-outgoing' : 'related-incoming');
+                    }
+
+                    const lineEl = document.getElementById(`line-${index}`);
+                    if(lineEl) {
+                        lineEl.classList.add(isFrom ? 'line-outgoing' : 'line-incoming');
+                        lineEl.setAttribute('marker-end', isFrom ? 'url(#marker-outgoing)' : 'url(#marker-incoming)');
+                    }
+
+                    const fromColEl = document.getElementById(`col-${rel.from_table}-${rel.from_column}`);
+                    const toColEl = document.getElementById(`col-${rel.to_table}-${rel.to_column}`);
+                    
+                    if(fromColEl) fromColEl.classList.add(isFrom ? 'col-outgoing' : 'col-incoming');
+                    if(toColEl) toColEl.classList.add(isFrom ? 'col-outgoing' : 'col-incoming');
+                } else {
+                    const lineEl = document.getElementById(`line-${index}`);
+                    if(lineEl) lineEl.classList.add('dimmed-line');
+                }
+            });
+        }
+
+        document.querySelectorAll('.table-card:not(.highlighted):not(.related-outgoing):not(.related-incoming)').forEach(el => {
+            el.classList.add('dimmed');
+        });
+    }
+
+    // Left Panel Logic
+    function showTableDetails(tableName) {
+        const tableObj = schemaData.tables.find(t => t.name === tableName);
+        if(!tableObj) return;
+
+        document.getElementById('panel-title').textContent = tableObj.name;
+        document.getElementById('panel-category').textContent = tableObj.category || 'Без категории';
+        document.getElementById('panel-desc').textContent = tableObj.description || 'Описание отсутствует';
+
+        let colsHtml = '';
+        tableObj.columns.forEach(col => {
+            const isPK = col.is_pk || col.type_name === 'PK';
+            const isFK = col.is_fk || col.type_name === 'FK';
+            const icon = isPK ? SVG_ICON_PK : (isFK ? SVG_ICON_FK : '');
+            
+            colsHtml += `
+                <div class="detail-item">
+                    <div class="flex justify-between items-center mb-1">
+                        <div class="font-bold flex items-center gap-1">${icon} ${col.name}</div>
+                        <div class="text-xs font-mono px-2 py-0.5 bg-gray-200 dark:bg-gray-600 rounded text-gray-700 dark:text-gray-300">${col.type_name || col.type}</div>
+                    </div>
+                    <div class="text-xs text-gray-600 dark:text-gray-400 mt-1">${col.description || '—'}</div>
+                </div>
+            `;
+        });
+        
+        document.getElementById('panel-cols').innerHTML = colsHtml;
+        document.getElementById('details-panel').classList.remove('-translate-x-full');
+    }
+
+    function closePanel() {
+        document.getElementById('details-panel').classList.add('-translate-x-full');
+    }
+
+    document.getElementById('btn-close-panel').addEventListener('click', () => {
+        clearHighlights();
+    });
+
+    // JSON Modal Logic
+    const jsonModalOverlay = document.getElementById('json-modal-overlay');
+    const jsonInput = document.getElementById('json-input');
+
+    function openModal() {
+        jsonModalOverlay.classList.remove('hidden');
+    }
+
+    function closeModal() {
+        jsonModalOverlay.classList.add('hidden');
+        jsonInput.value = '';
+    }
+
+    document.getElementById('btn-import-open').addEventListener('click', openModal);
+    document.getElementById('btn-close-modal').addEventListener('click', closeModal);
+    document.getElementById('btn-cancel-json').addEventListener('click', closeModal);
+
+    document.getElementById('btn-render-json').addEventListener('click', () => {
+        try {
+            const newSchema = JSON.parse(jsonInput.value);
+            if(newSchema && newSchema.tables) {
+                schemaData = newSchema;
+                clearHighlights();
+                normalizeCoordinates();
+                renderTables();
+                renderLines();
+                centerView();
+                closeModal();
+            } else {
+                alert("Неверный формат JSON: отсутствует массив tables");
+            }
+        } catch(e) {
+            alert("Ошибка чтения JSON: " + e.message);
+        }
+    });
+
+    function setupTableInteractions() {
+        const tables = document.querySelectorAll('.table-card');
+        tables.forEach(card => {
+            const header = card.querySelector('.table-header');
+            const tableName = card.getAttribute('data-name');
+            const tableObj = schemaData.tables.find(t => t.name === tableName);
+
+            card.addEventListener('pointerdown', (e) => {
+                if(!e.isPrimary && e.pointerType !== 'mouse') return;
+                selectHighlightTable(tableName);
+                e.stopPropagation(); 
+            });
+
+            header.addEventListener('pointerdown', (e) => {
+                if(!e.isPrimary && e.pointerType !== 'mouse') return;
+                isTableDragging = true;
+                draggedTableObj = tableObj;
+                
+                const pointerX = (e.clientX - translateX) / scale;
+                const pointerY = (e.clientY - translateY) / scale;
+                
+                tableDragOffsetX = pointerX - tableObj.position.x;
+                tableDragOffsetY = pointerY - tableObj.position.y;
+                
+                e.stopPropagation();
+            });
+        });
+    }
+
+    function initGlobalEvents() {
+        // Убедимся, что события не дублируются
+        app.removeEventListener('pointerdown', appPointerDownHandler);
+        window.removeEventListener('pointermove', windowPointerMoveHandler);
+        window.removeEventListener('pointerup', windowPointerUpHandler);
+        app.removeEventListener('wheel', appWheelHandler);
+
+        app.addEventListener('pointerdown', appPointerDownHandler);
+        window.addEventListener('pointermove', windowPointerMoveHandler);
+        window.addEventListener('pointerup', windowPointerUpHandler);
+
+        // Touch Zoom (Pinch-to-zoom) for Mobile
+        app.addEventListener('touchstart', (e) => {
+            if (e.touches.length === 2) {
+                isCanvasDragging = false; 
+                app.classList.remove('grabbing');
+                initialPinchDist = Math.hypot(
+                    e.touches[0].clientX - e.touches[1].clientX,
+                    e.touches[0].clientY - e.touches[1].clientY
+                );
+                initialPinchScale = scale;
+            }
+        }, {passive: false});
+
+        app.addEventListener('touchmove', (e) => {
+            if (e.touches.length === 2 && initialPinchDist) {
+                e.preventDefault(); 
+                const currentDist = Math.hypot(
+                    e.touches[0].clientX - e.touches[1].clientX,
+                    e.touches[0].clientY - e.touches[1].clientY
+                );
+                
+                const scaleDiff = currentDist / initialPinchDist;
+                let newScale = Math.min(Math.max(0.1, initialPinchScale * scaleDiff), 3);
+                
+                const cx = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+                const cy = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+                
+                const rect = app.getBoundingClientRect();
+                const mouseX = cx - rect.left;
+                const mouseY = cy - rect.top;
+                
+                translateX = mouseX - (mouseX - translateX) * (newScale / scale);
+                translateY = mouseY - (mouseY - translateY) * (newScale / scale);
+                scale = newScale;
+                
+                applyTransform();
+            }
+        }, {passive: false});
+
+        app.addEventListener('touchend', (e) => {
+            if (e.touches.length < 2) {
+                initialPinchDist = null;
+                initialPinchScale = null;
+            }
+        });
+
+        // Wheel Zoom for Desktop
+        app.addEventListener('wheel', appWheelHandler, { passive: false });
+
+        // События кнопок (удаляем старые, если вдруг были)
+        document.getElementById('btn-zoom-in').onclick = () => { scale = Math.min(scale * 1.2, 3); applyTransform(); };
+        document.getElementById('btn-zoom-out').onclick = () => { scale = Math.max(scale / 1.2, 0.1); applyTransform(); };
+        document.getElementById('btn-reset').onclick = centerView;
+        document.getElementById('btn-theme').onclick = toggleTheme;
+    }
+
+    // Обработчики событий мыши
+    function appPointerDownHandler(e) {
+        if(!e.isPrimary && e.pointerType !== 'mouse') return;
+        if (e.target === app || e.target === zoomLayer || e.target.id === 'svg-layer') {
+            isCanvasDragging = true;
+            startX = e.clientX - translateX;
+            startY = e.clientY - translateY;
+            app.classList.add('grabbing');
+            clearHighlights();
+        }
+    }
+
+    function windowPointerMoveHandler(e) {
+        if(!e.isPrimary && e.pointerType !== 'mouse') return;
+        if (isTableDragging && draggedTableObj) {
+            const pointerX = (e.clientX - translateX) / scale;
+            const pointerY = (e.clientY - translateY) / scale;
+            
+            draggedTableObj.position.x = pointerX - tableDragOffsetX;
+            draggedTableObj.position.y = pointerY - tableDragOffsetY;
+            
+            const card = document.getElementById(`tbl-${draggedTableObj.name}`);
+            if(card) {
+                card.style.left = `${draggedTableObj.position.x}px`;
+                card.style.top = `${draggedTableObj.position.y}px`;
+            }
+
+            renderLines();
+            updateHighlights();
+        } 
+        else if (isCanvasDragging) {
+            translateX = e.clientX - startX;
+            translateY = e.clientY - startY;
+            applyTransform();
+        }
+    }
+
+    function windowPointerUpHandler(e) {
+        if(!e.isPrimary && e.pointerType !== 'mouse') return;
+        isCanvasDragging = false;
+        isTableDragging = false;
+        draggedTableObj = null;
+        app.classList.remove('grabbing');
+    }
+
+    function appWheelHandler(e) {
+        e.preventDefault();
+        const zoomSensitivity = 0.001;
+        const delta = -e.deltaY * zoomSensitivity;
+        const newScale = Math.min(Math.max(0.1, scale + delta), 3);
+        
+        const rect = app.getBoundingClientRect();
+        const mouseX = e.clientX - rect.left;
+        const mouseY = e.clientY - rect.top;
+        
+        translateX = mouseX - (mouseX - translateX) * (newScale / scale);
+        translateY = mouseY - (mouseY - translateY) * (newScale / scale);
+        scale = newScale;
+        
+        applyTransform();
+    }
+
+    function toggleTheme() {
+        isDarkTheme = !isDarkTheme;
+        if (isDarkTheme) {
+            document.body.classList.add('dark-theme');
+            document.getElementById('icon-moon').classList.add('hidden');
+            document.getElementById('icon-sun').classList.remove('hidden');
+        } else {
+            document.body.classList.remove('dark-theme');
+            document.getElementById('icon-sun').classList.add('hidden');
+            document.getElementById('icon-moon').classList.remove('hidden');
+        }
+    }
+
     function centerView() {
-        if (!schemaData) return;
+        if (!schemaData.tables || schemaData.tables.length === 0) return;
+
         const windowWidth = window.innerWidth;
         const windowHeight = window.innerHeight;
         
         let maxX = 0, maxY = 0;
-<!-- ... existing code ... -->
+        schemaData.tables.forEach(t => {
+            if (t.position.x > maxX) maxX = t.position.x;
+            if (t.position.y > maxY) maxY = t.position.y;
+        });
+
+        scale = Math.min(windowWidth / (maxX + 600), windowHeight / (maxY + 600));
+        if (scale > 1) scale = 1;
+        
         translateX = 50;
         translateY = 50;
         applyTransform();
     }
 
-    async function loadSchema() {
-        try {
-            const response = await fetch('DB.json');
-            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-            schemaData = await response.json();
-            
-            normalizeCoordinates();
-            renderTables();
-            
-            setTimeout(() => {
-                renderLines();
-                centerView();
-                initGlobalEvents();
-            }, 100);
-        } catch (error) {
-            console.error("Ошибка загрузки DB.json:", error);
-            document.getElementById('tables-layer').innerHTML = `
-                <div style="position: absolute; top: 50vh; left: 50vw; transform: translate(-50%, -50%); text-align: center; color: var(--text-main); font-size: 1.2rem; background: var(--card-bg); padding: 2rem; border-radius: 1rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
-                    <h3>Ошибка загрузки DB.json</h3>
-                    <p class="text-sm mt-2 text-gray-500">Для работы локально запустите локальный сервер (например, Live Server). На GitHub Pages файл загрузится автоматически.</p>
-                </div>
-            `;
-        }
+    function initDiagram() {
+        normalizeCoordinates();
+        renderTables();
+        
+        setTimeout(() => {
+            renderLines();
+            centerView();
+            initGlobalEvents(); // Навешиваем события после рендера
+        }, 100);
     }
 
-    window.onload = loadSchema;
+    // Точка входа
+    window.onload = async () => {
+        try {
+            // Запрашиваем файл DB.json
+            const response = await fetch('DB.json');
+            if (!response.ok) {
+                throw new Error(`Ошибка HTTP: ${response.status}`);
+            }
+            schemaData = await response.json();
+            initDiagram();
+        } catch (error) {
+            console.warn("Не удалось загрузить DB.json при старте. Пользователь может загрузить JSON вручную.", error);
+            // Даже если файл не загрузился (например, при локальном запуске без сервера), 
+            // мы инициализируем базовый UI, чтобы работала кнопка ручного импорта.
+            initGlobalEvents();
+        }
+    };
 </script>
 
 </body>
